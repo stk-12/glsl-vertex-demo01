@@ -28,6 +28,8 @@ class Main {
       height: window.innerHeight
     };
 
+    this.step = 0;
+
     this.uniforms = {
       uTime: {
         value: 0.0
@@ -120,6 +122,10 @@ class Main {
   _update() {
 
     // this.mesh.rotation.y += 0.001;
+    this.step += 0.005;
+
+    this.camera.position.x = 1000 * Math.sin(this.step);
+    this.camera.position.z = 1000 * Math.cos(this.step);
 
     this.uniforms.uTime.value += 0.03;
 
