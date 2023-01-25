@@ -32,15 +32,19 @@ class Main {
       uTime: {
         value: 0.0
       },
-      uTex: {
-        value: this.texture
-      },
-      uResolution: {
-        value: new THREE.Vector2(this.viewport.width, this.viewport.height)
-      },
-      uTexResolution: {
-        value: new THREE.Vector2(2048, 1024)
-      },
+      // uTex: {
+      //   value: this.texture
+      // },
+      // uResolution: {
+      //   value: new THREE.Vector2(this.viewport.width, this.viewport.height)
+      // },
+      // uTexResolution: {
+      //   value: new THREE.Vector2(2048, 1024)
+      // },
+      uFrequency: {
+        // value: 3.0
+        value: new THREE.Vector2(4, 6)
+      }
     };
 
     this.init();
@@ -86,7 +90,7 @@ class Main {
 
   _addMesh() {
     //ジオメトリ
-    this.geometry = new THREE.IcosahedronGeometry(200, 32);
+    this.geometry = new THREE.IcosahedronGeometry(200, 8);
 
     //マテリアル
     this.material = new THREE.ShaderMaterial({
@@ -115,7 +119,7 @@ class Main {
 
   _update() {
 
-    // this.mesh.rotation.y += 0.005;
+    // this.mesh.rotation.y += 0.001;
 
     this.uniforms.uTime.value += 0.03;
 
