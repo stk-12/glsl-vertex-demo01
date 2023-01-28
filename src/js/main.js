@@ -1,6 +1,7 @@
 import '../css/style.scss'
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import * as dat from 'lil-gui';
 import vertexSource from "./shader/vertexShader.glsl";
 import fragmentSource from "./shader/fragmentShader.glsl";
 
@@ -23,10 +24,7 @@ class Main {
     this.material = null;
     this.mesh = null;
 
-    this.viewport = {
-      width: window.innerWidth,
-      height: window.innerHeight
-    };
+    this.gui = new dat.GUI();
 
     this.step = 0;
 
@@ -34,25 +32,19 @@ class Main {
       uTime: {
         value: 0.0
       },
-      // uTex: {
-      //   value: this.texture
-      // },
-      // uResolution: {
-      //   value: new THREE.Vector2(this.viewport.width, this.viewport.height)
-      // },
-      // uTexResolution: {
-      //   value: new THREE.Vector2(2048, 1024)
-      // },
+      //振幅
+      uWave: {
+        value: 5.0
+      },
+      //周波数
       uFrequency: {
         // value: 3.0
-        value: new THREE.Vector2(4, 6)
+        // value: new THREE.Vector2(4, 6)
+        value: new THREE.Vector3(4, 4, 4)
       }
     };
 
     this.init();
-    // this._init();
-    // this._update();
-    // this._addEvent();
   }
 
   _setRenderer() {
@@ -84,6 +76,10 @@ class Main {
     this.controls.enableDamping = true;
   }
 
+  _setGui() {
+    this.gui.add(this.uniforms.uWave, "value").min(0).max(50).step(0.1);
+  }
+
   _setLight() {
     const light = new THREE.DirectionalLight(0xffffff, 1.5);
     light.position.set(1, 1, 1);
@@ -92,14 +88,13 @@ class Main {
 
   _addMesh() {
     //ジオメトリ
-    this.geometry = new THREE.IcosahedronGeometry(200, 8);
+    this.geometry = new THREE.IcosahedronGeometry(200, 6);
 
     //マテリアル
     this.material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: vertexSource,
       fragmentShader: fragmentSource,
-      side: THREE.DoubleSide,
       wireframe: true,
     });
 
@@ -117,6 +112,8 @@ class Main {
 
     this._update();
     this._addEvent();
+
+    this._setGui();
   }
 
   _update() {
@@ -124,8 +121,8 @@ class Main {
     // this.mesh.rotation.y += 0.001;
     this.step += 0.005;
 
-    this.camera.position.x = 1000 * Math.sin(this.step);
-    this.camera.position.z = 1000 * Math.cos(this.step);
+    // this.camera.position.x = 1000 * Math.sin(this.step);
+    // this.camera.position.z = 1000 * Math.cos(this.step);
 
     this.uniforms.uTime.value += 0.03;
 
@@ -148,12 +145,7 @@ class Main {
     // カメラの位置を調整
     this.cameraDistance = (this.viewport.height / 2) / Math.tan(this.cameraFovRadian); //ウインドウぴったりのカメラ距離
     this.camera.position.z = this.cameraDistance;
-    // uniforms変数に反映
-    this.mesh.material.uniforms.uResolution.value.set(this.viewport.width, this.viewport.height);
-    // meshのscale設定
-    const scaleX = Math.round(this.viewport.width / this.mesh.geometry.parameters.width * 100) / 100 + 0.01;
-    const scaleY = Math.round(this.viewport.height / this.mesh.geometry.parameters.height * 100) / 100 + 0.01;
-    this.mesh.scale.set(scaleX, scaleY, 1);
+
   }
 
   _addEvent() {
